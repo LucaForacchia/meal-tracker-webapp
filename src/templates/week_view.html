@@ -1,0 +1,34 @@
+{% extends "base.html" %} {% block title %}Weekly view{% endblock %} {% block
+content %}
+<h2> Week number {{week_number}} </h2>
+{% if error %}
+  <h4> Il backend non è d'accordo </h4>
+{% else %}
+  <div class="table-responsive">
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">Type</th>
+          <th scope="col">Who</th>
+          <th scope="col">Meal</th>
+          <th scope="col">Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in meals %}
+        <tr>
+          <th scope="row">{{item.date}}</th>
+          <td>{{item.meal_type}}</td>
+          <td>{{item.participants}}</td>
+          <td>{{item.meal}}</td>
+          <td>{{item.notes}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endif %}
+<a class="btn btn-primary" href="?week-number={{week_number-1}}" role="button">Previous</a>
+<a class="btn btn-primary" href="?week-number={{week_number+1}}" role="button">Next</a>
+{% endblock %}
