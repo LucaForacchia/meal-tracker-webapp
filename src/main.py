@@ -1,11 +1,12 @@
 import os
 from flask import Flask
-from infrastructure.web_controller.views import views
-from infrastructure.web_controller.meal_controller import meals
-from infrastructure.web_controller.replacement_controller import replacement
+from infrastructure.blueprints.welcome_controller import welcome_controller
+from infrastructure.blueprints.meal_controller import meals
+from infrastructure.blueprints.replacement_controller import replacement
 
 app = Flask(__name__)
-app.register_blueprint(views, url_prefix="/welcome")
+
+app.register_blueprint(welcome_controller, url_prefix="/welcome")
 app.register_blueprint(meals, url_prefix="/meals")
 app.register_blueprint(replacement, url_prefix="/replacement")
 

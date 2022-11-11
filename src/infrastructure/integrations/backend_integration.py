@@ -32,3 +32,12 @@ class BackendIntegration:
             raise Exception("Error requiring meal list! Check backend status")
         
         return res.json()["list"]
+
+    def get_replacement_list(self):
+        res = requests.get(self.backend_url + "/meal/replacement")
+
+        if res.status_code != 200:
+            raise Exception("Error requiring replacement table! Check backend status")
+        
+        print(res.json())
+        return res.json()

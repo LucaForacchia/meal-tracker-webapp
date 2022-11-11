@@ -1,7 +1,17 @@
-{% extends "base.html" %} {% block title %}Meal insertion{% endblock %} {% block
-content %}
+{% extends "base.html" %} {% block title %}Meal insertion{% endblock %} 
+{% block style %} 
+<style>
+    p {
+     text-align:center
+    }
+</style> {% endblock %}
+{% block content %}
+<h1><p>Meal Tracker webapp</p></h1>
+<p>version: {{version}} </p>
 
-<h1>Hi! I'm a website!</h1>
+<br>
 <!-- <h1><span class="badge bg-secondary">Hi! I'm a website</span></h1> -->
+
+<img src="{{ url_for('welcome.static', filename='pictures/foodpic1.jpg') }}" class="img-thumbnail" alt="Picture2">
 
 {% endblock %}
