@@ -19,6 +19,6 @@ def after_request(response):
 debug_boot = os.environ.get("run_debug")
 
 if debug_boot is not None and bool(debug_boot):
-    app.run(debug=True, host="0.0.0.0", port=5012)
+    app.run(debug=True, host="0.0.0.0", port=15002)
 else:
     app.run(debug=False, host="0.0.0.0", port=5002)

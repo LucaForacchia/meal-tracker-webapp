@@ -106,6 +106,14 @@
     <input type="text" class="form-control" id="meal" name="meal" placeholder="Insert meal" />
   </div>
 
+  <p></p>
+
+  <div class="form-group">
+    Dessert: <input type="checkbox" id="myCheck" onclick="myFunction()">
+    <label for="Dessert"></label>
+    <input type="text" class="form-control" id="dessert" name="dessert" style="display:none" />
+  </div>
+
   <div class="form-group">
     <label for="Notes">Notes</label>
     <input type="text" class="form-control" id="notes" name="notes" />
@@ -120,6 +128,22 @@
 {% block script %}
 <script type="text/javascript">
   try {var meal_list = {{ meal_list| tojson}}} catch (error) { console.error(error) }
+</script>
+
+<script type="text/javascript">
+  function myFunction() {
+    // Get the checkbox
+    var checkBox = document.getElementById("myCheck");
+    // Get the output text
+    var text = document.getElementById("text");
+
+    // If the checkbox is checked, display the output text
+    if (checkBox.checked == true){
+      dessert.style.display = "block";
+    } else {
+      dessert.style.display = "none";
+    }
+  } 
 </script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='script_autocomplete.js') }}"></script>

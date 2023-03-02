@@ -11,12 +11,6 @@ config = load_config()
 @meals.route("/", methods=['GET', 'POST'])
 def meal_insertion():
     if request.method == 'POST':
-        # email = request.form.get('email')
-        # first_name = request.form.get('firstName')
-        # password1 = request.form.get('password1')
-        # password2 = request.form.get('password2')
-
-        # print(email, first_name, password1)
         print(request.form)
 
         meal_form = {
@@ -27,6 +21,10 @@ def meal_insertion():
             "meal": request.form.get('meal'),
             "notes": request.form.get('notes')
         }
+
+        if "dessert" in request.form.keys():
+            if (dessert:=request.form.get("dessert")) != "":
+                meal_form["dessert"] = dessert
 
 
         # QUI FACCIO LE COSE!
@@ -43,24 +41,15 @@ def meal_insertion():
     meal_list = get_backend_integration().require_meals_list()
     return render_template("insertion.html", meal_list=meal_list)    
 
-@meals.route("/last/")
-def last_meal():
-    response = requests.get(config["backend_url"] + "/meal/")
-    if response.status_code != 200:
-        # SPACCA TUTTO
-        raise Exception("Server is exploding!")
-    else:
-        meal = response.json()
-        print(meal)
-        return render_template("last_meal.html", meal=meal)
-
 @meals.route("/week")
 def week_meals():
     week_number = int(request.args["week-number"]) if "week-number" in request.args else None
     
     try:
         meals_list = get_backend_integration().require_weekly_meal_list(week_number)
-
+        for meal in meals_list["meals"]:
+            meal["dessert"] = meal["dessert"] if meal["dessert"] is not None else "-"
+            
         return render_template("week_view.html", meals = meals_list["meals"], week_number = meals_list["week_number"])
     except:
         return render_template("week_view.html", error = True, week_number = week_number)

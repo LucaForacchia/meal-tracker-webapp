@@ -1,6 +1,5 @@
 # MealTracker Webapp
 
-version 0.0.2
-
+version 0.1.0
 
 This is a web application!
