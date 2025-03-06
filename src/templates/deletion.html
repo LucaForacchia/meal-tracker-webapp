@@ -1,0 +1,9 @@
+{% extends "base.html" %} {% block title %}Deletion page{% endblock %} {% block
+    content %}
+    <h4> Davvero vuoi cancellare il pasto: </h3>
+    <h2> {{meal.date}}-{{meal.type}}-{{meal.participants}} ? </h2>
+    <h4> Questa azione è irreversibile!
+    </h4>
+    <a class="btn btn-primary" href="/meals/week" role="button">No scherzavo</a>
+    <a class="btn btn-primary" href="/meals/deletion-confirmed?date={{meal.date}}&meal_type={{meal.type}}&participants={{meal.participants}}" role="button">Brucia tutto &#128293</a>
+    {% endblock %}

@@ -1,6 +1,6 @@
 import time
 import requests
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, redirect, url_for
 
 from infrastructure.config import load_config, get_backend_integration
 
@@ -61,3 +61,25 @@ def frequencies():
     for i in range(0, len(meals_list)):
         meals_list[i].append(i+1)
     return render_template("frequencies.html", meals = meals_list)
+
+@meals.route("/deletion")
+def confirm_deletion():
+    meal = {
+        "date": request.args["date"],
+        "type": request.args["meal_type"],
+        "participants": request.args["participants"]
+    }
+
+    return render_template("deletion.html", meal = meal)
+
+@meals.route("/deletion-confirmed")
+def delete_meal():
+    meal = {
+        "date": request.args["date"],
+        "meal_type": request.args["meal_type"],
+        "participants": request.args["participants"]
+    }
+
+    get_backend_integration().delete_meal(meal)
+
+    return redirect(url_for('meals.week_meals'))

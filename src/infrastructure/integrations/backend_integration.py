@@ -41,3 +41,9 @@ class BackendIntegration:
         
         print(res.json())
         return res.json()
+
+    def delete_meal(self, meal):
+        res = requests.delete(self.backend_url + "/meal/single", json=meal)
+
+        if res.status_code > 204:
+            raise Exception("Error while removing meal! Check meal existence and/or backend status")
