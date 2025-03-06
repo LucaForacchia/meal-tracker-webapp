@@ -1,3 +1,7 @@
+## [0.5.1] - 2025-03-06
+## Removed
+- Useless replacement page (currently handled manually)
+
 ## [0.4.0] - 2023-09-26 
 
 
