@@ -1,3 +1,11 @@
+## [0.5.2] - 2025-03-06
+## Added
+- Filtering meals count for participants
+- Backend version in the welcome page
+
+## Changed
+- Extended meals list to 100 items
+
 ## [0.5.1] - 2025-03-06
 ## Removed
 - Useless replacement page (currently handled manually)

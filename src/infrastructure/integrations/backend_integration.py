@@ -5,6 +5,14 @@ class BackendIntegration:
     def __init__(self, config):
         self.backend_url = config["backend_url"]
 
+    def get_backend_version(self):
+        res = requests.get(self.backend_url + "/welcome")
+
+        if res.status_code != 200:
+            raise Exception("Il backend non è d'accordo!")
+
+        return res.json()["version"]
+    
     def require_weekly_meal_list(self, week_number = None):
         params = {
             "week-number": week_number
@@ -17,8 +25,11 @@ class BackendIntegration:
 
         return res.json()
 
-    def require_frequencies(self):
+    def require_frequencies(self, who = None):
         res = requests.get(self.backend_url + "/meal/counts")
+
+        if who is not None:
+            res = requests.get(self.backend_url + "/meal/counts", params={"who": who})
 
         if res.status_code != 200:
             raise Exception("Il backend non è d'accordo!")

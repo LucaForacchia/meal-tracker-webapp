@@ -56,7 +56,10 @@ def week_meals():
 
 @meals.route("/frequencies")
 def frequencies():
-    meals_list = get_backend_integration().require_frequencies()[:50]
+     # Get the query parameter from the request
+    who = request.args.get('who')
+
+    meals_list = get_backend_integration().require_frequencies(who)[:100]
 
     for i in range(0, len(meals_list)):
         meals_list[i].append(i+1)
