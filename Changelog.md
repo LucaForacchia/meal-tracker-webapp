@@ -1,3 +1,7 @@
+## [0.5.3] - 2025-05-29
+## Fixed
+- Autocomplete scripts now automatically discards null value
+
 ## [0.5.2] - 2025-03-06
 ## Added
 - Filtering meals count for participants
