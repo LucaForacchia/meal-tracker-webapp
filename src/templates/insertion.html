@@ -1,152 +1,176 @@
 {% extends "base.html" %}
-{% block title %}Meal insertion{% endblock %}
+{% block title %}Nuovo pasto{% endblock %}
 
-% block style %
+{% block style %}
+<style>
+  /* Autocomplete container */
+  .autocomplete {
+    position: relative;
+    display: block;
+    width: 100%;
+  }
 
-% endblock %
+  .autocomplete-items {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+    top: 100%;
+    left: 0;
+    right: 0;
+  }
+
+  .autocomplete-items div {
+    padding: 14px 12px;
+    cursor: pointer;
+    background-color: #fff;
+    border-bottom: 1px solid #d4d4d4;
+    font-size: 16px;
+  }
+
+  .autocomplete-items div:hover {
+    background-color: #e9e9e9;
+  }
+
+  .autocomplete-active {
+    background-color: DodgerBlue !important;
+    color: #ffffff;
+  }
+
+  /* ===== Mobile-first compact layout ===== */
+  form input,
+  form select,
+  form button,
+  form .btn,
+  form .form-control {
+    min-height: 48px;
+    font-size: 16px;  /* prevents iOS auto-zoom */
+  }
+
+  form .form-group,
+  form .row {
+    margin-bottom: 0.5rem;
+  }
+
+  form button[type="submit"] {
+    width: 100%;
+    margin-top: 0.3rem;
+  }
+
+  input[type="date"] {
+    width: 100%;
+  }
+
+  .form-heading {
+    text-align: center;
+    margin-bottom: 0.6rem;
+    font-weight: 600;
+    font-size: 1.3rem;
+  }
+
+  /* Bootstrap custom-switch: enough height for touch, native sizing */
+  .custom-switch {
+    min-height: 44px;
+    padding-top: 4px;
+  }
+  .custom-switch .custom-control-label {
+    font-size: 16px;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<!-- CSS HEAD!! -->
-
-<head> <!-- If inside the "Style block", has a different (worst) effect! -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font: 16px Arial;
-    }
-
-    /*the container must be positioned relative:*/
-    .autocomplete {
-      position: relative;
-      display: inline-block;
-    }
-
-    input {
-      border: 1px solid transparent;
-      background-color: #f1f1f1;
-      padding: 10px;
-      font-size: 16px;
-    }
-
-    input[type=text] {
-      background-color: #f1f1f1;
-      width: 100%;
-    }
-
-    input[type=submit] {
-      background-color: DodgerBlue;
-      color: #fff;
-      cursor: pointer;
-    }
-
-    .autocomplete-items {
-      position: absolute;
-      border: 1px solid #d4d4d4;
-      border-bottom: none;
-      border-top: none;
-      z-index: 99;
-      /*position the autocomplete items to be the same width as the container:*/
-      top: 100%;
-      left: 0;
-      right: 0;
-    }
-
-    .autocomplete-items div {
-      padding: 10px;
-      cursor: pointer;
-      background-color: #fff;
-      border-bottom: 1px solid #d4d4d4;
-    }
-
-    /*when hovering an item:*/
-    .autocomplete-items div:hover {
-      background-color: #e9e9e9;
-    }
-
-    /*when navigating through the items using the arrow keys:*/
-    .autocomplete-active {
-      background-color: DodgerBlue !important;
-      color: #ffffff;
-    }
-  </style>
-</head>
-
 <form method="POST" autocomplete="off">
-  <h3 align="center">Insert a meal</h3>
+  <h4 class="form-heading">Nuovo pasto</h4>
+
+  <!-- Date -->
   <div class="form-group">
-    <label class="active" for="dateMeal">Date: </label>
-    <input type="date" id="dateMeal" name="dateMeal">
+    <label for="dateMeal">Data</label>
+    <input type="date" class="form-control form-control-lg" id="dateMeal"
+           name="dateMeal" value="{{ today }}">
   </div>
 
-  <div class="form-check">
-    <input class="form-group" type="checkbox" id="startweek" name="Start week" value="">
-    <label class="form-check-label">Start Week</label>
+  <!-- Start Week toggle switch -->
+  <div class="custom-control custom-switch mb-2">
+    <input type="checkbox" class="custom-control-input" id="startweek-switch"
+           onchange="toggleStartWeek()">
+    <label class="custom-control-label" for="startweek-switch">Nuova settimana</label>
+  </div>
+  <input type="hidden" id="startweek-input" name="Start week" value="">
+
+  <!-- Chi + Tipo side by side -->
+  <div class="row">
+    <div class="col-6">
+      <div class="form-group">
+        <label for="participants">Chi</label>
+        <select class="form-control form-control-lg" id="participants" name="participants">
+          <option>Entrambi</option>
+          <option>Luca</option>
+          <option>Gioi</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="form-group">
+        <label for="meal_type">Tipo</label>
+        <select class="form-control form-control-lg" id="meal_type" name="meal_type">
+          <option>Pranzo</option>
+          <option>Cena</option>
+        </select>
+      </div>
+    </div>
   </div>
 
-  <label for="Who" class="form-label">Who: </label>
-  <select class="form-select" , name="participants">
-    <option>Entrambi</option>
-    <option>Luca</option>
-    <option>Gioi</option>
-  </select>
-  <br />
-
-  <label for="Type" class="form-label">Type: </label>
-  <select class="form-select" , name="meal_type">
-    <option>Pranzo</option>
-    <option>Cena</option>
-  </select>
-  <br />
-
-  <div class="autocomplete">
-    <label for="Meal">Meal</label>
-    <input type="text" class="form-control" id="meal" name="meal" placeholder="Insert meal" />
-  </div>
-
-  <p></p>
-
+  <!-- Meal name with autocomplete -->
   <div class="form-group">
-    Dessert: <input type="checkbox" id="myCheck" onclick="myFunction()">
-    <label for="Dessert"></label>
-    <input type="text" class="form-control" id="dessert" name="dessert" style="display:none" />
+    <label for="meal">Pasto</label>
+    <div class="autocomplete">
+      <input type="text" class="form-control form-control-lg" id="meal"
+             name="meal" placeholder="Inserisci pasto..." required>
+    </div>
   </div>
 
-  <div class="form-group">
-    <label for="Notes">Notes</label>
-    <input type="text" class="form-control" id="notes" name="notes" />
+  <!-- Dessert + Note side by side -->
+  <div class="row">
+    <div class="col-6">
+      <div class="form-group">
+        <label for="dessert">Dessert</label>
+        <input type="text" class="form-control" id="dessert"
+               name="dessert" placeholder="Opzionale">
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="form-group">
+        <label for="notes">Note</label>
+        <input type="text" class="form-control" id="notes"
+               name="notes" placeholder="Opzionale">
+      </div>
+    </div>
   </div>
 
-  <br />
-  <button type="submit" class="btn btn-primary">Submit</button>
+  <button type="submit" class="btn btn-primary btn-lg">Salva pasto</button>
 </form>
-
 {% endblock %}
 
 {% block script %}
+<!-- Meal list for autocomplete -->
 <script type="text/javascript">
-  try {var meal_list = {{ meal_list| tojson}}} catch (error) { console.error(error) }
+  try {var meal_list = {{ meal_list | tojson }};} catch (error) { console.error(error); }
 </script>
 
+<!-- Start Week toggle: sync switch to hidden input -->
 <script type="text/javascript">
-  function myFunction() {
-    // Get the checkbox
-    var checkBox = document.getElementById("myCheck");
-    // Get the output text
-    var text = document.getElementById("text");
-
-    // If the checkbox is checked, display the output text
-    if (checkBox.checked == true){
-      dessert.style.display = "block";
-    } else {
-      dessert.style.display = "none";
-    }
-  } 
+  function toggleStartWeek() {
+    var sw = document.getElementById("startweek-switch");
+    var input = document.getElementById("startweek-input");
+    input.value = sw.checked ? "on" : "";
+  }
 </script>
 
+<!-- Autocomplete -->
 <script type="text/javascript" src="{{ url_for('static', filename='script_autocomplete.js') }}"></script>
 
+<!-- Bootstrap Autocomplete (kept for compat) -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@v2.3.7/dist/latest/bootstrap-autocomplete.min.js"></script>
 {% endblock %}

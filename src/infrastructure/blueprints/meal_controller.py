@@ -1,6 +1,6 @@
-import time
+from datetime import date
 import requests
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 from infrastructure.config import load_config, get_backend_integration
 
@@ -15,7 +15,7 @@ def meal_insertion():
 
         meal_form = {
             "date": request.form.get('dateMeal'),
-            "start_week": True if "Start week" in request.form.keys() else False,
+            "start_week": request.form.get("Start week") == "on",
             "meal_type": request.form.get('meal_type'),
             "participants": request.form.get('participants'),
             "meal": request.form.get('meal'),
@@ -27,19 +27,16 @@ def meal_insertion():
                 meal_form["dessert"] = dessert
 
 
-        # QUI FACCIO LE COSE!
-        # APRO UNA MODALE (SE CI RIESCO)
-        # FACCIO LA MIA CHIAMATA AL BACKEND (SE CI RIESCO)
-        # TODO: QUESTO VA NEL BACKEND INTEGRATION, NON QUI! E DOVREBBE RESTITUIRE ERRORI QUANDO USATO IN DEBUG
-        print(meal_form)
         res = requests.post(config["backend_url"] + "/meal/", json=meal_form)
-        if res.status_code != 201:
-            raise Exception("Unexpected status code!")
-        # E VERIFICO CHE MI RISPONDA 201. IN CASO CONTRARIO, APRO ERRORI A MANETTA
-        time.sleep(0.5)
+        if res.status_code == 201:
+            flash("Pasto inserito ✓", "success")
+        else:
+            flash("Errore durante l'inserimento — riprova", "error")
+
+        return redirect(url_for('meals.meal_insertion'))
 
     meal_list = get_backend_integration().require_meals_list()
-    return render_template("insertion.html", meal_list=meal_list)    
+    return render_template("insertion.html", meal_list=meal_list, today=date.today().isoformat())    
 
 @meals.route("/week")
 def week_meals():

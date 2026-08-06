@@ -4,6 +4,7 @@ from infrastructure.blueprints.welcome_controller import welcome_controller
 from infrastructure.blueprints.meal_controller import meals
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "meal-tracker-dev-key-change-me")
 
 app.register_blueprint(welcome_controller, url_prefix="/welcome")
 app.register_blueprint(meals, url_prefix="/meals")
