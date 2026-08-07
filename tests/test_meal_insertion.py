@@ -66,15 +66,15 @@ class TestGetForm:
             # 2 col-6 pairs: Chi+Tipo, Dessert+Note
             assert html.count('col-6') == 4
 
-    def test_meal_field_required(self, client):
-        """The meal text field has the 'required' attribute."""
+    def test_meal_field_not_required(self, client):
+        """The meal text field must not be required (an empty meal is allowed)."""
         with patch('infrastructure.blueprints.meal_controller.get_backend_integration') as mock_integration:
             mock_integration.return_value.require_meals_list.return_value = []
 
             resp = client.get('/meals/')
             html = resp.data.decode()
             assert 'id="meal"' in html
-            assert 'required' in html
+            assert 'required' not in html
 
 
 # ── POST: start_week ─────────────────────────────────────────────────
