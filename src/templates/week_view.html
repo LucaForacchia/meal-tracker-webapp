@@ -25,7 +25,9 @@ content %}
           <td>{{item.meal}}</td>
           <td>{{item.dessert}}</td>
           <td>{{item.notes}}</td>
-        </tr>
+          <td><a class="delete" title="Delete" data-toggle="tooltip" href="/meals/deletion?date={{item.date}}&meal_type={{item.meal_type}}&participants={{item.participants}}">
+            <i class="material-icons">&#xE872;</i></a></td>
+          </tr>
         {% endfor %}
       </tbody>
     </table>
@@ -33,4 +35,4 @@ content %}
 {% endif %}
 <a class="btn btn-primary" href="?week-number={{week_number-1}}" role="button">Previous</a>
 <a class="btn btn-primary" href="?week-number={{week_number+1}}" role="button">Next</a>
-{% endblock %}
+{% endblock %}  

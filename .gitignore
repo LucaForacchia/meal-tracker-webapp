@@ -2,3 +2,14 @@ learning*
 pictures*
 script-*
 deployment*
+*.sh
+.codewhale*
+.pytest_cache/
+!script-docker-build.sh
+
+### Python ###
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+certs*

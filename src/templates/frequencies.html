@@ -1,13 +1,11 @@
 {% extends "base.html" %} {% block title %}Frequent meals{% endblock %} {% block
 content %}
-<!-- <h2> Most frequents meal {{week_number}} </h2> -->
-  <!-- <div class="container">
-    {% for item in meals %}
-    <div class="row">
-      <div class="col">{{item[1]}} {{item[0]}}</div>
-    </div>
-    {% endfor %}
-  </div> -->
+<div style="margin: 20px 0;">
+  <button id="Total" class="btn btn-primary" onclick="changeQuery(null)">Total</button>
+  <button id="Entrambi" class="btn btn-primary" onclick="changeQuery('both')">Entrambi</button>
+  <button id="Luca" class="btn btn-primary" onclick="changeQuery('L')">Luca</button>
+  <button id="Gioi" class="btn btn-primary" onclick="changeQuery('G')">Gioi</button>
+</div>
 
   <table class="table table-sm">
     <tbody>
@@ -19,4 +17,32 @@ content %}
       </tr>
       {% endfor %}
   </table>
-  {% endblock %}
+
+  <script>
+  function changeQuery(param) {
+    // Check if param is null
+    if (param === null) {
+      // Refresh the page without any query parameters
+      location.href = window.location.href.split('?')[0];
+      return;
+    }
+
+    // Update the query string
+    console.log("changeQuery called with parameter:", param);
+    var url = new URL(window.location.href);
+    url.searchParams.set('who', param);
+    var newUrl = url.toString();
+
+    // Update the URL without reloading the page
+    console.log("Updating URL:", newUrl);
+    history.pushState({}, '', newUrl);
+
+
+    // Refresh the page
+    console.log("Reloading page");
+    location.reload();
+    };
+  </script>
+
+
+{% endblock %}
