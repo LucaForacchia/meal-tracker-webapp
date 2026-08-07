@@ -1,3 +1,10 @@
+## [1.0.0] - 2026-08-07
+## Added
+- First stable release — app installable as a PWA from the phone home screen
+- PWA support: web app manifest (`/manifest.json`), service worker (`/sw.js`) and generated app icons (192x192, 512x512, maskable)
+- App installable on the home screen (display: standalone, theme color matching the navbar)
+- Service worker cache strategy: cache-first for static assets/CDN libraries, network-first for navigations with fallback to the last visited page (app shell); backend data stays online-only
+
 ## [0.6.0] - 2026-08-06
 ## Added
 - Mobile-first meal insertion form (compact layout, fits in one screen on mobile)

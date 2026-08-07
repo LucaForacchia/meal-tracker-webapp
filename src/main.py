@@ -2,6 +2,7 @@ import os
 from flask import Flask
 from infrastructure.blueprints.welcome_controller import welcome_controller
 from infrastructure.blueprints.meal_controller import meals
+from infrastructure.blueprints.pwa_controller import pwa_controller
 
 CERT_DIR = os.environ.get("CERT_DIR", "/certs")
 CERT_FILE = os.path.join(CERT_DIR, 'acer-host.local.pem')
@@ -13,6 +14,7 @@ if __name__ == '__main__':
 
     app.register_blueprint(welcome_controller, url_prefix="/welcome")
     app.register_blueprint(meals, url_prefix="/meals")
+    app.register_blueprint(pwa_controller)
 
     @app.after_request
     def after_request(response):
