@@ -1,10 +1,16 @@
 # MealTracker WebApp — Roadmap
 
-Ultimo aggiornamento: 2026-08-06 (sessione Codewhale)
+Ultimo aggiornamento: 2026-10-02
 
 ---
 
-## ✅ Completato (sessione 2026-08-03/06)
+## ✅ Completato
+
+### Release 1.0.0 (2026-08-07)
+
+- [x] **PWA — app installabile sulla home del telefono** — `manifest.json`, service worker `sw.js` (cache-first per statici/CDN, network-first per le navigazioni), icone 192/512/maskable, `display: standalone`; i dati del backend restano online-only
+
+### Sessione 2026-08-03/06 (release 0.6.0)
 
 - [x] **Form inserimento mobile-first** — layout compatto, Chi+Tipo e Dessert+Note affiancati, heading ridotto, CSS touch target 48px, data preimpostata a oggi
 - [x] **Toggle "Nuova settimana"** — sostituita checkbox nativa con Bootstrap custom-switch (label + interruttore iOS-style)
@@ -17,19 +23,16 @@ Ultimo aggiornamento: 2026-08-06 (sessione Codewhale)
 
 ---
 
-## 🔲 PWA — Rendi l'app installabile sulla home del telefono
+## 🔲 Ringiovanire l'ambiente Python
 
-**Priorità**: Alta  
-**File coinvolti**: `src/static/` (nuovi), `src/templates/base.html`, `src/main.py`
+**Priorità**: Media (non urgente)  
+**File coinvolti**: `Dockerfile` (oggi `python:3.10-slim`), `requirements.txt` (oggi `flask`, `requests==2.31.0`), test
 
 **Cosa fare**:
-- Creare `manifest.json` con nome app, icona, colore tema, `display: standalone`
-- Aggiungere `<link rel="manifest">` in `base.html`
-- Service worker basilare (`sw.js`) con cache delle risorse statiche (CSS/JS Bootstrap da CDN, template)
-- Registrare il service worker in `base.html`
-- L'app resta online-only (cache solo risorse statiche, non dati)
+- Portare tutto l'ambiente a una versione di Python più recente (almeno 3.12), in coordinamento col backend (oggi 3.11.7)
+- Bloccare le dipendenze (come fatto nel backend), rieseguire `pytest tests/ -v`, ricostruire l'immagine e verificarla contro un backend di prova
 
-**Perché**: aprire il browser e digitare l'IP ogni volta è scomodo; installata in home screen sembra un'app nativa.
+**Perché**: 3.10 si avvicina a fine supporto; tenere i due servizi sulla stessa versione semplifica manutenzione e test.
 
 ---
 
@@ -96,7 +99,7 @@ Ultimo aggiornamento: 2026-08-06 (sessione Codewhale)
 
 ## Note
 
-- **Backend**: il backend (`meal-tracker:0.2.0`) è gestito separatamente; le modifiche qui sono solo lato webapp
+- **Backend**: il backend (`meal-tracker:0.2.2`) è gestito separatamente; le modifiche qui sono solo lato webapp
 - **Test**: eseguire sempre `pytest tests/ -v` prima e dopo ogni modifica
-- **Ambiente dev**: `bash run-for-test.sh` (porta 15002, debug mode)
+- **Ambiente dev**: `bash run-for-testing.sh` (porta 15002, debug mode; avvia un backend di prova via `deployment/docker-compose.yml`, solo per test)
 - **Docker build**: `bash script-docker-build.sh` per creare l'immagine
