@@ -3,6 +3,7 @@ import requests
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 from infrastructure.config import load_config, get_backend_integration
+from infrastructure.integrations.backend_integration import WeekNotFound
 
 meals = Blueprint("meals", __name__)
 
@@ -40,16 +41,23 @@ def meal_insertion():
 
 @meals.route("/week")
 def week_meals():
-    week_number = int(request.args["week-number"]) if "week-number" in request.args else None
-    
+    week_number = None
+    meal_date = request.args.get("date")
+
     try:
-        meals_list = get_backend_integration().require_weekly_meal_list(week_number)
+        if meal_date:
+            meals_list = get_backend_integration().require_weekly_meal_list_by_date(meal_date)
+        else:
+            week_number = int(request.args["week-number"]) if "week-number" in request.args else None
+            meals_list = get_backend_integration().require_weekly_meal_list(week_number)
         for meal in meals_list["meals"]:
             meal["dessert"] = meal["dessert"] if meal["dessert"] is not None else "-"
             
-        return render_template("week_view.html", meals = meals_list["meals"], week_number = meals_list["week_number"])
+        return render_template("week_view.html", meals = meals_list["meals"], week_number = meals_list["week_number"], meal_date = meal_date)
+    except WeekNotFound as err:
+        return render_template("week_view.html", error = str(err), week_number = None, meal_date = meal_date)
     except:
-        return render_template("week_view.html", error = True, week_number = week_number)
+        return render_template("week_view.html", error = "Il backend non è d'accordo", week_number = week_number, meal_date = meal_date)
 
 @meals.route("/frequencies")
 def frequencies():

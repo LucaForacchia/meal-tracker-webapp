@@ -1,6 +1,6 @@
 # MealTracker Webapp
 
-version 1.0.0
+version 1.1.0
 
 Server-side rendered web frontend (Flask + Jinja + Bootstrap) of MealTracker. It lets you insert, list and delete meals, see the weekly view and the meal frequencies, talking to the _meal-tracker-backend_ REST API. It is installable on a phone home screen as a PWA.
 
@@ -54,3 +54,9 @@ Build the image with the version tag:
 ## PWA
 
 The app exposes `/manifest.json` and `/sw.js`. The service worker caches static assets (cache-first) and falls back to the last visited page on navigation errors (network-first); backend data is always online-only.
+
+Every page carries its render time and checks `/ping` on load and when the app comes back to foreground: if the server is not reachable (e.g. phone on a different network) the page is the cached copy and shows "Non connesso al server. Copia del gg/mm hh:mm".
+
+## Weekly view
+
+`/meals/week` shows the last week; `?week-number=N` a given week (Previous/Next); `?date=YYYY-MM-DD` the week containing a date ("Vai a data" button, requires backend >= 0.3.0).

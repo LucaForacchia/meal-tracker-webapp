@@ -25,6 +25,18 @@ class BackendIntegration:
 
         return res.json()
 
+    def require_weekly_meal_list_by_date(self, meal_date):
+        res = requests.get(self.backend_url + "/meal/week", params={"date": meal_date})
+
+        if res.status_code == 404:
+            # date outside the tracked period: the backend message is shown to the user
+            raise WeekNotFound(res.json()["error_message"])
+
+        if res.status_code != 200:
+            raise Exception("Il backend non è d'accordo!")
+
+        return res.json()
+
     def require_frequencies(self, who = None):
         res = requests.get(self.backend_url + "/meal/counts")
 
@@ -58,3 +70,7 @@ class BackendIntegration:
 
         if res.status_code > 204:
             raise Exception("Error while removing meal! Check meal existence and/or backend status")
+
+
+class WeekNotFound(Exception):
+    pass

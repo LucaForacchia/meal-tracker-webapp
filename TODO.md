@@ -6,6 +6,12 @@ Ultimo aggiornamento: 2026-10-02
 
 ## ✅ Completato
 
+### Release 1.1.0 (2026-10-02)
+
+- [x] **Vai a data** nella vista settimanale — selettore di data, settimana che contiene la data (backend ≥ 0.3.0), "Data fuori periodo tracciato" fuori periodo
+- [x] **Avviso copia non aggiornata** — "Non connesso al server. Copia del gg/mm hh:mm" quando il service worker mostra la pagina in cache
+- [x] **Python 3.13.12** e dipendenze bloccate (`requirements.txt`, `requirements-dev.txt`)
+
 ### Release 1.0.0 (2026-08-07)
 
 - [x] **PWA — app installabile sulla home del telefono** — `manifest.json`, service worker `sw.js` (cache-first per statici/CDN, network-first per le navigazioni), icone 192/512/maskable, `display: standalone`; i dati del backend restano online-only
@@ -93,7 +99,7 @@ La webapp è su Python 3.13.12 (release 1.1.0); il backend è ancora su 3.11.7 e
 
 ## Note
 
-- **Backend**: il backend (`meal-tracker:0.2.2`) è gestito separatamente; le modifiche qui sono solo lato webapp
+- **Backend**: il backend (`meal-tracker:0.3.0`, richiesto dalla 1.1.0 per `?date=`) è gestito separatamente; le modifiche qui sono solo lato webapp
 - **Test**: eseguire sempre `.venv/bin/python -m pytest tests/ -v` prima e dopo ogni modifica
 - **Ambiente dev**: `bash run-for-testing.sh` (porta 15002, debug mode; avvia un backend di prova via `deployment/docker-compose.yml`, solo per test)
 - **Docker build**: `bash script-docker-build.sh` per creare l'immagine
