@@ -1,10 +1,22 @@
 # MealTracker WebApp — Roadmap
 
-Ultimo aggiornamento: 2026-08-06 (sessione Codewhale)
+Ultimo aggiornamento: 2026-10-02
 
 ---
 
-## ✅ Completato (sessione 2026-08-03/06)
+## ✅ Completato
+
+### Release 1.1.0 (2026-10-02)
+
+- [x] **Vai a data** nella vista settimanale — selettore di data, settimana che contiene la data (backend ≥ 0.3.0), "Data fuori periodo tracciato" fuori periodo
+- [x] **Avviso copia non aggiornata** — "Non connesso al server. Copia del gg/mm hh:mm" quando il service worker mostra la pagina in cache
+- [x] **Python 3.13.12** e dipendenze bloccate (`requirements.txt`, `requirements-dev.txt`)
+
+### Release 1.0.0 (2026-08-07)
+
+- [x] **PWA — app installabile sulla home del telefono** — `manifest.json`, service worker `sw.js` (cache-first per statici/CDN, network-first per le navigazioni), icone 192/512/maskable, `display: standalone`; i dati del backend restano online-only
+
+### Sessione 2026-08-03/06 (release 0.6.0)
 
 - [x] **Form inserimento mobile-first** — layout compatto, Chi+Tipo e Dessert+Note affiancati, heading ridotto, CSS touch target 48px, data preimpostata a oggi
 - [x] **Toggle "Nuova settimana"** — sostituita checkbox nativa con Bootstrap custom-switch (label + interruttore iOS-style)
@@ -17,19 +29,10 @@ Ultimo aggiornamento: 2026-08-06 (sessione Codewhale)
 
 ---
 
-## 🔲 PWA — Rendi l'app installabile sulla home del telefono
+## 🔲 Allineare la versione Python col backend
 
-**Priorità**: Alta  
-**File coinvolti**: `src/static/` (nuovi), `src/templates/base.html`, `src/main.py`
-
-**Cosa fare**:
-- Creare `manifest.json` con nome app, icona, colore tema, `display: standalone`
-- Aggiungere `<link rel="manifest">` in `base.html`
-- Service worker basilare (`sw.js`) con cache delle risorse statiche (CSS/JS Bootstrap da CDN, template)
-- Registrare il service worker in `base.html`
-- L'app resta online-only (cache solo risorse statiche, non dati)
-
-**Perché**: aprire il browser e digitare l'IP ogni volta è scomodo; installata in home screen sembra un'app nativa.
+**Priorità**: Bassa  
+La webapp è su Python 3.13.12 (release 1.1.0); il backend è ancora su 3.11.7 e il suo aggiornamento è un TODO del backend. Quando verrà fatto, tenere le due versioni allineate.
 
 ---
 
@@ -96,7 +99,7 @@ Ultimo aggiornamento: 2026-08-06 (sessione Codewhale)
 
 ## Note
 
-- **Backend**: il backend (`meal-tracker:0.2.0`) è gestito separatamente; le modifiche qui sono solo lato webapp
-- **Test**: eseguire sempre `pytest tests/ -v` prima e dopo ogni modifica
-- **Ambiente dev**: `bash run-for-test.sh` (porta 15002, debug mode)
+- **Backend**: il backend (`meal-tracker:0.3.0`, richiesto dalla 1.1.0 per `?date=`) è gestito separatamente; le modifiche qui sono solo lato webapp
+- **Test**: eseguire sempre `.venv/bin/python -m pytest tests/ -v` prima e dopo ogni modifica
+- **Ambiente dev**: `bash run-for-testing.sh` (porta 15002, debug mode; avvia un backend di prova via `deployment/docker-compose.yml`, solo per test)
 - **Docker build**: `bash script-docker-build.sh` per creare l'immagine

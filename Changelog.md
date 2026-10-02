@@ -1,3 +1,19 @@
+## [1.1.0] - 2026-10-02
+Requires backend >= 0.3.0 (`GET /meal/week?date=`).
+
+## Added
+- "Vai a data" button on the weekly view: opens the date picker and shows the week containing the chosen date; dates outside the tracked period show the backend message "Data fuori periodo tracciato" with a link back to the last week
+- Banner "Non connesso al server. Copia del gg/mm hh:mm" when the page shown is the copy cached by the service worker (server not reachable): pages carry their render time, `/ping` checks reachability on load and when the app comes back to foreground
+- Tests for the weekly view, the date lookup and the reachability check
+
+## Changed
+- Service worker cache renamed to `mealtracker-v2`: pages cached by 1.0.0 are dropped
+- Python upgraded from 3.10 to 3.13.12, identical in Docker (`python:3.13.12-slim`), local (_.python-version_) and tests
+- All dependencies locked: runtime in _requirements.txt_ (Flask 3.1.3, requests 2.34.2, ...), test tools in _requirements-dev.txt_; local development uses a `.venv` matching the Docker image
+
+## Fixed
+- Weekly view with a non-integer `week-number` crashed (500): it now shows the error message
+
 ## [1.0.0] - 2026-08-07
 ## Added
 - First stable release — app installable as a PWA from the phone home screen

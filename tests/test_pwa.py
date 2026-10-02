@@ -1,6 +1,7 @@
 """Tests for PWA support: manifest, service worker and base template hooks."""
 import json
 import os
+import re
 import sys
 
 import pytest
@@ -66,6 +67,21 @@ class TestServiceWorker:
         assert b'PRECACHE_URLS' in resp.data
         assert b'networkFirst' in resp.data
 
+    def test_cache_name_bumped(self, client):
+        """Cache v2 drops the pages cached by 1.0.0 (without the stale copy banner)."""
+        assert b"CACHE_NAME = 'mealtracker-v2'" in client.get('/sw.js').data
+
+
+# ── Server reachability ─────────────────────────────────────────────
+
+
+class TestPing:
+    def test_ping(self, client):
+        """GET /ping answers 204 with no body."""
+        resp = client.get('/ping')
+        assert resp.status_code == 204
+        assert resp.data == b''
+
 
 # ── base.html hooks ─────────────────────────────────────────────────
 
@@ -80,3 +96,13 @@ class TestBaseTemplate:
         assert 'apple-touch-icon' in html
         assert 'navigator.serviceWorker' in html
         assert "register('/sw.js')" in html
+
+    def test_stale_copy_banner(self, app, client):
+        """base.html carries its render time and the banner shown when /ping fails."""
+        with app.test_request_context():
+            html = render_template('base.html')
+        assert re.search(r'<body data-rendered-at="\d{13}">', html)
+        assert 'id="staleCopyBanner"' in html
+        assert "fetch('/ping'" in html
+        assert 'Non connesso al server.' in html
+        assert 'Copia del ' in html

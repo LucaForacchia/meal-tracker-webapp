@@ -24,7 +24,7 @@
   {% block style %} {% endblock %}
 </head>
 
-<body>
+<body data-rendered-at="{{ rendered_at }}">
   <!-- Questa roba viene tutta dal sito web di bootstrap, che è quello che dovresti studiarti per capire come funziona -->
   <!-- Navigation bar: each button has its own id, its href and displayed Name -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -40,6 +40,9 @@
       </div>
     </div>
   </nav>
+
+  <!-- Shown when the page is a cached copy served by the service worker (server not reachable) -->
+  <div id="staleCopyBanner" class="alert alert-warning rounded-0 d-none" role="alert"></div>
 
   {% with messages = get_flashed_messages(with_categories=true) %} {% if
   messages %} {% for category, message in messages %} {% if category ==
@@ -79,6 +82,40 @@
         });
       });
     }
+
+    // Server reachability: if /ping fails, this page is the last cached copy
+    (function () {
+      var banner = document.getElementById('staleCopyBanner');
+      var renderedAt = Number(document.body.dataset.renderedAt);
+
+      function pad(n) { return String(n).padStart(2, '0'); }
+
+      function showBanner() {
+        var text = 'Non connesso al server.';
+        if (renderedAt) {
+          var d = new Date(renderedAt);
+          text += ' Copia del ' + pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + ' ' +
+            pad(d.getHours()) + ':' + pad(d.getMinutes());
+        }
+        banner.textContent = text;
+        banner.classList.remove('d-none');
+      }
+
+      function checkServer() {
+        fetch('/ping', { cache: 'no-store' })
+          .then(function (response) {
+            if (!response.ok) throw new Error('ping ' + response.status);
+            banner.classList.add('d-none');
+          })
+          .catch(showBanner);
+      }
+
+      window.addEventListener('load', checkServer);
+      // the PWA reopened from background shows the page as it was: check again
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') checkServer();
+      });
+    })();
   </script>
 </body>
 

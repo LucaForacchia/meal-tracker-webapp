@@ -6,11 +6,13 @@
  *      cache-first, with runtime caching of successful responses
  *  - navigations (same-origin HTML pages):
  *      network-first, falling back to the last cached copy of the page
- *      (the "app shell" — shows the last visited page when offline)
- *  - everything else (POST requests, backend API, unknown origins):
+ *      (the "app shell" — shows the last visited page when offline); the page
+ *      itself shows "Non connesso al server. Copia del ..." (see base.html)
+ *  - everything else (POST requests, backend API, /ping, unknown origins):
  *      left to the default network behavior
  */
-const CACHE_NAME = 'mealtracker-v1';
+// Bump to drop the copies cached by previous versions (activate deletes other caches)
+const CACHE_NAME = 'mealtracker-v2';
 
 const PRECACHE_URLS = [
   '/manifest.json',
