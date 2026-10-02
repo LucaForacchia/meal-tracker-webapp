@@ -23,16 +23,10 @@ Ultimo aggiornamento: 2026-10-02
 
 ---
 
-## 🔲 Ringiovanire l'ambiente Python
+## 🔲 Allineare la versione Python col backend
 
-**Priorità**: Media (non urgente)  
-**File coinvolti**: `Dockerfile` (oggi `python:3.10-slim`), `requirements.txt` (oggi `flask`, `requests==2.31.0`), test
-
-**Cosa fare**:
-- Portare tutto l'ambiente a una versione di Python più recente (almeno 3.12), in coordinamento col backend (oggi 3.11.7)
-- Bloccare le dipendenze (come fatto nel backend), rieseguire `pytest tests/ -v`, ricostruire l'immagine e verificarla contro un backend di prova
-
-**Perché**: 3.10 si avvicina a fine supporto; tenere i due servizi sulla stessa versione semplifica manutenzione e test.
+**Priorità**: Bassa  
+La webapp è su Python 3.13.12 (release 1.1.0); il backend è ancora su 3.11.7 e il suo aggiornamento è un TODO del backend. Quando verrà fatto, tenere le due versioni allineate.
 
 ---
 
@@ -100,6 +94,6 @@ Ultimo aggiornamento: 2026-10-02
 ## Note
 
 - **Backend**: il backend (`meal-tracker:0.2.2`) è gestito separatamente; le modifiche qui sono solo lato webapp
-- **Test**: eseguire sempre `pytest tests/ -v` prima e dopo ogni modifica
+- **Test**: eseguire sempre `.venv/bin/python -m pytest tests/ -v` prima e dopo ogni modifica
 - **Ambiente dev**: `bash run-for-testing.sh` (porta 15002, debug mode; avvia un backend di prova via `deployment/docker-compose.yml`, solo per test)
 - **Docker build**: `bash script-docker-build.sh` per creare l'immagine

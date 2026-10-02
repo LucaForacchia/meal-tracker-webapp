@@ -1,3 +1,8 @@
+## [1.1.0] - unreleased
+## Changed
+- Python upgraded from 3.10 to 3.13.12, identical in Docker (`python:3.13.12-slim`), local (_.python-version_) and tests
+- All dependencies locked: runtime in _requirements.txt_ (Flask 3.1.3, requests 2.34.2, ...), test tools in _requirements-dev.txt_; local development uses a `.venv` matching the Docker image
+
 ## [1.0.0] - 2026-08-07
 ## Added
 - First stable release — app installable as a PWA from the phone home screen

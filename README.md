@@ -8,8 +8,17 @@ Server-side rendered web frontend (Flask + Jinja + Bootstrap) of MealTracker. It
 
 ## Environment
 
-- Python 3.10 in Docker (`python:3.10-slim`, see _Dockerfile_); dependencies in _requirements.txt_ (Flask, requests)
-- Upgrading to a newer Python (at least 3.12) is tracked in _TODO.md_
+The project runs on a single locked environment, identical in every context:
+
+- **Python 3.13.12** everywhere:
+  - Docker image: `python:3.13.12-slim` (see _Dockerfile_)
+  - Local development and tests: `.venv` created from Python 3.13.12 (_.python-version_ pins the interpreter for pyenv)
+- **Dependencies**: fully pinned. _requirements.txt_ holds the runtime ones (Flask, requests and their dependencies), installed in the Docker image; _requirements-dev.txt_ adds the test tools (pytest) for local use.
+
+## Setup
+
+    > python -m venv .venv                # uses Python 3.13.12 (see .python-version)
+    > .venv/bin/pip install -r requirements-dev.txt
 
 ## Configuration
 
@@ -26,7 +35,7 @@ HTTPS is enabled only if the certificate files are found in `CERT_DIR`; otherwis
 
 ## Run the tests
 
-    > pytest tests/ -v
+    > .venv/bin/python -m pytest tests/ -v
 
 ## Local debug
 
