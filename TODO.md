@@ -1,10 +1,15 @@
 # MealTracker WebApp — Roadmap
 
-Ultimo aggiornamento: 2026-10-02
+Ultimo aggiornamento: 2026-10-17
 
 ---
 
 ## ✅ Completato
+
+### Release 1.2.0 (2026-10-17)
+
+- [x] **Due PWA distinte, casa e Tailscale** — manifest e meta tag in base all'host: "MealTracker" blu in rete locale, "VPN Meals" verde via Tailscale (`*.ts.net`)
+- [x] **Icone nuove** — piatto e posate, blu (casa) e verde (VPN), 192/512/maskable generate dai sorgenti 1024x1024
 
 ### Release 1.1.0 (2026-10-02)
 

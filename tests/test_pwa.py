@@ -2,6 +2,7 @@
 import json
 import os
 import re
+import struct
 import sys
 
 import pytest
@@ -28,31 +29,71 @@ def client(app):
     return app.test_client()
 
 
+# Requests from the two origins the app is installed from
+HOME = {'Host': 'acer-host.local:5002'}
+TAILSCALE = {'Host': 'laptop-home.tail1234.ts.net'}
+TAILSCALE_PROXIED = {'Host': '127.0.0.1:5002', 'X-Forwarded-Host': 'laptop-home.tail1234.ts.net'}
+
+
+def png_size(data):
+    """(width, height) read from the PNG header."""
+    assert data[:8] == b'\x89PNG\r\n\x1a\n'
+    return struct.unpack('>II', data[16:24])
+
+
 # ── Manifest ────────────────────────────────────────────────────────
 
 
 class TestManifest:
-    def test_served_as_json(self, client):
+    def test_served_as_manifest(self, client):
         """GET /manifest.json returns a valid web app manifest."""
-        resp = client.get('/manifest.json')
+        resp = client.get('/manifest.json', headers=HOME)
         assert resp.status_code == 200
-        assert resp.content_type.startswith('application/json')
+        assert resp.content_type == 'application/manifest+json'
         manifest = json.loads(resp.data)
-        assert manifest['name'] == 'MealTracker'
-        assert manifest['short_name'] == 'Meals'
         assert manifest['start_url'] == '/welcome'
         assert manifest['scope'] == '/'
         assert manifest['display'] == 'standalone'
 
-    def test_icons_declared_and_present(self, client):
-        """Manifest declares 192 and 512 icons and the files are served."""
-        resp = client.get('/manifest.json')
-        manifest = json.loads(resp.data)
-        sizes = {icon['sizes'] for icon in manifest['icons']}
-        assert '192x192' in sizes
-        assert '512x512' in sizes
+    def test_home_variant(self, client):
+        """Home network: MealTracker, blue, icon-* icons."""
+        manifest = json.loads(client.get('/manifest.json', headers=HOME).data)
+        assert manifest['name'] == 'MealTracker'
+        assert manifest['short_name'] == 'Meals'
+        assert manifest['theme_color'] == '#1e5fa8'
+        assert manifest['background_color'] == '#1e5fa8'
+        assert [icon['src'] for icon in manifest['icons']] == [
+            '/static/icons/icon-192.png',
+            '/static/icons/icon-512.png',
+            '/static/icons/icon-maskable-512.png',
+        ]
+
+    @pytest.mark.parametrize('headers', [TAILSCALE, TAILSCALE_PROXIED],
+                             ids=['host', 'x-forwarded-host'])
+    def test_tailscale_variant(self, client, headers):
+        """Tailscale (*.ts.net, as Host or forwarded host): VPN Meals, green, vpn-icon-* icons."""
+        manifest = json.loads(client.get('/manifest.json', headers=headers).data)
+        assert manifest['name'] == 'VPN Meals'
+        assert manifest['short_name'] == 'VPN Meals'
+        assert manifest['theme_color'] == '#2e8b57'
+        assert manifest['background_color'] == '#2e8b57'
+        assert [icon['src'] for icon in manifest['icons']] == [
+            '/static/icons/vpn-icon-192.png',
+            '/static/icons/vpn-icon-512.png',
+            '/static/icons/vpn-icon-maskable-512.png',
+        ]
+
+    @pytest.mark.parametrize('headers', [HOME, TAILSCALE], ids=['home', 'tailscale'])
+    def test_icons_present_with_declared_size(self, client, headers):
+        """Every declared icon is served, opaque, with the size the manifest declares."""
+        manifest = json.loads(client.get('/manifest.json', headers=headers).data)
+        assert {icon['purpose'] for icon in manifest['icons']} == {'any', 'maskable'}
         for icon in manifest['icons']:
-            assert client.get(icon['src']).status_code == 200, icon['src']
+            resp = client.get(icon['src'])
+            assert resp.status_code == 200, icon['src']
+            width, height = png_size(resp.data)
+            assert icon['sizes'] == f'{width}x{height}', icon['src']
+            assert resp.data[25] == 2, f"{icon['src']} is not RGB (opaque)"
 
 
 # ── Service worker ──────────────────────────────────────────────────
@@ -68,8 +109,8 @@ class TestServiceWorker:
         assert b'networkFirst' in resp.data
 
     def test_cache_name_bumped(self, client):
-        """Cache v2 drops the pages cached by 1.0.0 (without the stale copy banner)."""
-        assert b"CACHE_NAME = 'mealtracker-v2'" in client.get('/sw.js').data
+        """Cache v3 drops the old icons, cached cache-first at the same URLs (1.2.0)."""
+        assert b"CACHE_NAME = 'mealtracker-v3'" in client.get('/sw.js').data
 
 
 # ── Server reachability ─────────────────────────────────────────────
@@ -89,13 +130,22 @@ class TestPing:
 class TestBaseTemplate:
     def test_pwa_hooks_present(self, app, client):
         """base.html links the manifest and registers the service worker."""
-        with app.test_request_context():
+        with app.test_request_context(headers=HOME):
             html = render_template('base.html')
         assert 'rel="manifest" href="/manifest.json"' in html
-        assert 'name="theme-color" content="#343a40"' in html
-        assert 'apple-touch-icon' in html
+        assert 'name="theme-color" content="#1e5fa8"' in html
+        assert 'rel="apple-touch-icon" href="/static/icons/icon-192.png"' in html
+        assert 'name="apple-mobile-web-app-title" content="MealTracker"' in html
         assert 'navigator.serviceWorker' in html
         assert "register('/sw.js')" in html
+
+    def test_tailscale_variant(self, app, client):
+        """Behind Tailscale base.html shows the VPN color, icon and title."""
+        with app.test_request_context(headers=TAILSCALE):
+            html = render_template('base.html')
+        assert 'name="theme-color" content="#2e8b57"' in html
+        assert 'rel="apple-touch-icon" href="/static/icons/vpn-icon-192.png"' in html
+        assert 'name="apple-mobile-web-app-title" content="VPN Meals"' in html
 
     def test_stale_copy_banner(self, app, client):
         """base.html carries its render time and the banner shown when /ping fails."""

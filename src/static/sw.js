@@ -12,7 +12,7 @@
  *      left to the default network behavior
  */
 // Bump to drop the copies cached by previous versions (activate deletes other caches)
-const CACHE_NAME = 'mealtracker-v2';
+const CACHE_NAME = 'mealtracker-v3';
 
 const PRECACHE_URLS = [
   '/manifest.json',

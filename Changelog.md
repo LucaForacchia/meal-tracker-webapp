@@ -1,3 +1,14 @@
+## [1.2.0] - 2026-10-17
+## Added
+- Two distinct PWAs, one per origin: "MealTracker" (home network) and "VPN Meals" (Tailscale, hosts `*.ts.net`, detected from `X-Forwarded-Host` or `Host`). Name, theme color and icons of `/manifest.json` and of the `base.html` meta tags follow the host
+- New app icons from 1024x1024 sources (`icon-casa.png` blue, `icon-vpn.png` green), with 192, 512 and maskable 512 sizes for each variant
+- Tests for both manifest variants, icon sizes and template meta tags
+
+## Changed
+- Home theme color from `#343a40` to `#1e5fa8` (blue of the new icon)
+- `/manifest.json` is served as `application/manifest+json`
+- Service worker cache renamed to `mealtracker-v3`: the old icons, cached at the same URLs, are dropped
+
 ## [1.1.0] - 2026-10-02
 Requires backend >= 0.3.0 (`GET /meal/week?date=`).
 
