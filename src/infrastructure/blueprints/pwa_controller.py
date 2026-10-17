@@ -23,12 +23,14 @@ PWA_VARIANTS = {
         "name": "MealTracker",
         "short_name": "Meals",
         "theme_color": "#1e5fa8",
+        "theme_color_dark": "#184c86",
         "icon_prefix": "icon-",
     },
     "vpn": {
         "name": "VPN Meals",
         "short_name": "VPN Meals",
         "theme_color": "#2e8b57",
+        "theme_color_dark": "#256f46",
         "icon_prefix": "vpn-icon-",
     },
 }
@@ -51,7 +53,8 @@ def pwa_template_values():
     rendered_at: render time (epoch ms, formatted by the browser in its own timezone).
     When the server is not reachable the service worker serves the last cached copy of a
     page: base.html then shows "Non connesso al server. Copia del <rendered_at>".
-    pwa: variant (name, theme color, icons) of the origin the page is served from.
+    pwa: variant (name, colors, icons) of the origin the page is served from; its
+    colors are also the palette of the page (navbar, buttons, switches, links).
     """
     return {"rendered_at": int(time.time() * 1000), "pwa": pwa_variant()}
 

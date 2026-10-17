@@ -6,6 +6,10 @@ Ultimo aggiornamento: 2026-10-17
 
 ## ✅ Completato
 
+### Release 1.2.1 (2026-10-17)
+
+- [x] **Palette coerente** — navbar, bottoni, interruttori e link del colore della variante (blu casa, verde VPN), come le barre di sistema del telefono
+
 ### Release 1.2.0 (2026-10-17)
 
 - [x] **Due PWA distinte, casa e Tailscale** — manifest e meta tag in base all'host: "MealTracker" blu in rete locale, "VPN Meals" verde via Tailscale (`*.ts.net`)

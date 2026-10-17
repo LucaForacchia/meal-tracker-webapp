@@ -136,16 +136,20 @@ class TestBaseTemplate:
         assert 'name="theme-color" content="#1e5fa8"' in html
         assert 'rel="apple-touch-icon" href="/static/icons/icon-192.png"' in html
         assert 'name="apple-mobile-web-app-title" content="MealTracker"' in html
+        assert '--pwa-color: #1e5fa8;' in html
+        assert '--pwa-color-dark: #184c86;' in html
         assert 'navigator.serviceWorker' in html
         assert "register('/sw.js')" in html
 
     def test_tailscale_variant(self, app, client):
-        """Behind Tailscale base.html shows the VPN color, icon and title."""
+        """Behind Tailscale base.html shows the VPN color, palette, icon and title."""
         with app.test_request_context(headers=TAILSCALE):
             html = render_template('base.html')
         assert 'name="theme-color" content="#2e8b57"' in html
         assert 'rel="apple-touch-icon" href="/static/icons/vpn-icon-192.png"' in html
         assert 'name="apple-mobile-web-app-title" content="VPN Meals"' in html
+        assert '--pwa-color: #2e8b57;' in html
+        assert '--pwa-color-dark: #256f46;' in html
 
     def test_stale_copy_banner(self, app, client):
         """base.html carries its render time and the banner shown when /ping fails."""

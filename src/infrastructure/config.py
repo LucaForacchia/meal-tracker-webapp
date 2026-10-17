@@ -4,7 +4,7 @@ from flask import g
 from .integrations.backend_integration import BackendIntegration
 
 def get_current_version():
-    return "1.2.0"
+    return "1.2.1"
 
 def load_config():
     config = {}

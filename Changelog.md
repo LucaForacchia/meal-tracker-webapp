@@ -1,3 +1,7 @@
+## [1.2.1] - 2026-10-17
+## Changed
+- The pages take the color of the PWA variant, matching the phone status and navigation bars: navbar, primary buttons, switches, links and input focus are blue at home and green behind Tailscale (they were the Bootstrap dark grey and blue)
+
 ## [1.2.0] - 2026-10-17
 ## Added
 - Two distinct PWAs, one per origin: "MealTracker" (home network) and "VPN Meals" (Tailscale, hosts `*.ts.net`, detected from `X-Forwarded-Host` or `Host`). Name, theme color and icons of `/manifest.json` and of the `base.html` meta tags follow the host

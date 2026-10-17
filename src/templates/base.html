@@ -18,6 +18,38 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"> 
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <!-- Palette of the PWA variant (blue at home, green behind Tailscale) over the Bootstrap primary blue -->
+  <style>
+    :root {
+      --pwa-color: {{ pwa.theme_color }};
+      --pwa-color-dark: {{ pwa.theme_color_dark }};
+    }
+    .navbar { background-color: var(--pwa-color); }
+    .btn-primary,
+    .btn-outline-primary:hover,
+    .btn-outline-primary:not(:disabled):not(.disabled):active {
+      color: #fff;
+      background-color: var(--pwa-color);
+      border-color: var(--pwa-color);
+    }
+    .btn-primary:hover,
+    .btn-primary:focus,
+    .btn-primary:not(:disabled):not(.disabled):active {
+      background-color: var(--pwa-color-dark);
+      border-color: var(--pwa-color-dark);
+    }
+    .btn-outline-primary { color: var(--pwa-color); border-color: var(--pwa-color); }
+    .btn-primary:focus, .btn-outline-primary:focus, .form-control:focus,
+    .custom-control-input:focus ~ .custom-control-label::before {
+      border-color: var(--pwa-color);
+      box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.15);
+    }
+    .custom-control-input:checked ~ .custom-control-label::before {
+      background-color: var(--pwa-color);
+      border-color: var(--pwa-color);
+    }
+    .container a:not(.btn) { color: var(--pwa-color); }
+  </style>
 
 
   <title>{% block title %}Home{% endblock %}</title>
@@ -27,7 +59,7 @@
 <body data-rendered-at="{{ rendered_at }}">
   <!-- Questa roba viene tutta dal sito web di bootstrap, che è quello che dovresti studiarti per capire come funziona -->
   <!-- Navigation bar: each button has its own id, its href and displayed Name -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <nav class="navbar navbar-expand-lg navbar-dark">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
       <span class="navbar-toggler-icon"></span>
     </button>
