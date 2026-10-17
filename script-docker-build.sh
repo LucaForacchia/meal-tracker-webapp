@@ -1,3 +1,3 @@
-export version=1.1.0
+export version=1.2.1
 
 docker build -t meal-tracker-webapp:$version .

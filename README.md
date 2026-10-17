@@ -1,6 +1,6 @@
 # MealTracker Webapp
 
-version 1.1.0
+version 1.2.1
 
 Server-side rendered web frontend (Flask + Jinja + Bootstrap) of MealTracker. It lets you insert, list and delete meals, see the weekly view and the meal frequencies, talking to the _meal-tracker-backend_ REST API. It is installable on a phone home screen as a PWA.
 
@@ -54,6 +54,8 @@ Build the image with the version tag:
 ## PWA
 
 The app exposes `/manifest.json` and `/sw.js`. The service worker caches static assets (cache-first) and falls back to the last visited page on navigation errors (network-first); backend data is always online-only.
+
+The app is installed from two origins, each as its own PWA: the home network and Tailscale (`tailscale serve`, hosts `*.ts.net`). `/manifest.json` and the `base.html` meta tags change with the host (`X-Forwarded-Host` if present, otherwise `Host`): "MealTracker" in blue (`icon-*` icons) at home, "VPN Meals" in green (`vpn-icon-*` icons) behind Tailscale. The same color is the palette of the pages (navbar, primary buttons, switches, links), set in `base.html` over the Bootstrap primary blue. The icons are generated from the 1024x1024 sources `icon-casa.png` and `icon-vpn.png` in `src/static/icons/`.
 
 Every page carries its render time and checks `/ping` on load and when the app comes back to foreground: if the server is not reachable (e.g. phone on a different network) the page is the cached copy and shows "Non connesso al server. Copia del gg/mm hh:mm".
 

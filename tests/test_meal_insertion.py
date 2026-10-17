@@ -11,6 +11,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from flask import Flask, get_flashed_messages
 from infrastructure.blueprints.meal_controller import meals
+from infrastructure.blueprints.pwa_controller import pwa_controller
 
 
 @pytest.fixture
@@ -20,6 +21,7 @@ def app():
     app = Flask(__name__, template_folder=tmpl)
     app.secret_key = 'test-secret'
     app.register_blueprint(meals, url_prefix='/meals')
+    app.register_blueprint(pwa_controller)  # base.html uses its context values, as in main.py
     return app
 
 

@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from flask import Flask
 from infrastructure.blueprints.meal_controller import meals
+from infrastructure.blueprints.pwa_controller import pwa_controller
 from infrastructure.integrations.backend_integration import BackendIntegration, WeekNotFound
 
 
@@ -28,6 +29,7 @@ def app():
     app = Flask(__name__, template_folder=tmpl)
     app.secret_key = 'test-secret'
     app.register_blueprint(meals, url_prefix='/meals')
+    app.register_blueprint(pwa_controller)  # base.html uses its context values, as in main.py
     return app
 
 
